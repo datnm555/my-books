@@ -1,12 +1,9 @@
-﻿namespace my_books.Api.Data.Models
-{
-    public class Book
-    {
-        public Book()
-        {
-            Authors = new List<Author>();
-        }
+﻿using my_books.Api.Data.Models;
 
+namespace my_books.Api.Data.ViewModels
+{
+    public class BookAuthorVm
+    {
         public int Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
@@ -16,11 +13,8 @@
         public string CoverUrl { get; set; }
         public DateTime DateAdded { get; set; }
         public string Genre { get; set; }
-        public string Author { get; set; }
 
-        public int? PublisherId { get; set; }
-        public Publisher Publisher { get; set; }
-
-        public List<Author> Authors { get; set; }
+        public string PublisherName { get; set; }
+        public List<string> AuthorNames { get; set; }
     }
 }

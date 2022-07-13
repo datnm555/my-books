@@ -16,14 +16,14 @@ namespace my_books.Api.Controllers
             _bookService = bookService;
         }
 
-        [HttpPost]
+        [HttpPost("add-book-with-authors")]
         public ActionResult AddBook([FromBody] BookVm bookVm)
         {
             _bookService.AddBook(bookVm);
             return Ok();
         }
 
-
+      
         [HttpGet]
         public ActionResult GetBooks()
         {

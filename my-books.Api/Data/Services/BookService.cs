@@ -1,4 +1,5 @@
-﻿using my_books.Api.Data.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using my_books.Api.Data.Models;
 using my_books.Api.Data.ViewModels;
 
 namespace my_books.Api.Data.Services
@@ -25,7 +26,17 @@ namespace my_books.Api.Data.Services
                 IsRead = bookVm.IsRead,
                 Rate = bookVm.Rate,
                 Title = bookVm.Title,
+                PublisherId = bookVm.PublisherId
             };
+
+            foreach (var authorId in bookVm.AuthorIds)
+            {
+                var author = _context.Authors.FirstOrDefault(x => x.Id == authorId);
+                if (author != null)
+                {
+                    book.Authors.Add(author);
+                }
+            }
 
             _context.Books.Add(book);
             _context.SaveChanges();
@@ -36,9 +47,27 @@ namespace my_books.Api.Data.Services
             return _context.Books.ToList();
         }
 
-        public Book GetBookById(int id)
+        public BookAuthorVm GetBookById(int id)
         {
-            return _context.Books.FirstOrDefault(x => x.Id == id);
+            var book = _context.Books.Where(x => x.Id == id).Include(x => x.Publisher).Include(x => x.Authors).FirstOrDefault();
+            if (book == null)
+            {
+                return null;
+            }
+            return new BookAuthorVm
+            {
+                CoverUrl = book.CoverUrl,
+                AuthorNames = book.Authors.Select(x => x.Name).ToList(),
+                DateAdded = book.DateAdded,
+                DateRead = book.DateRead,
+                IsRead = book.IsRead,
+                Description = book.Description,
+                PublisherName = book.Publisher.Name,
+                Id = book.Id,
+                Rate = book.Rate,
+                Title = book.Title,
+                Genre = book.Genre,
+            };
         }
 
         public Book UpdateBook(int id, BookVm bookVm)
@@ -73,8 +102,6 @@ namespace my_books.Api.Data.Services
             }
             _context.Books.Remove(book);
             _context.SaveChanges();
-
-
         }
     }
 }
